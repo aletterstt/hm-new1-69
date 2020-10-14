@@ -16,6 +16,7 @@ export default {
 async created(){
   let res=await this.$axios.get('/user_star')
   console.log(res.data);
+  
   this.listPost=res.data.data
 }
 }
