@@ -41,7 +41,7 @@
         <div class="imgs">
           <img :src="fixeUrl(post.cover[0].url)" alt="">
           <img :src="fixeUrl(post.cover[1].url)" alt="">
-          <img :src="fixeUrl(post.cover[2].urlq)" alt="">
+          <img :src="fixeUrl(post.cover[2].url)" alt="">
           
         </div>
       <div class="bottom">

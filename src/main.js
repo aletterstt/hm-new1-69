@@ -68,8 +68,10 @@ axios.interceptors.request.use((config)=>{
   }
   return config
 })
+
+
 //响应拦截器
-axios.interceptors.response.use((res)=>{
+/* axios.interceptors.response.use((res)=>{
   const {statusCode,message} =res.data
   if(statusCode ===401 && message === "用户信息验证失败"){
     localStorage.removeItem('token')
@@ -78,7 +80,7 @@ axios.interceptors.response.use((res)=>{
   }
   return res
 })
-
+ */
 new Vue({
   router,   //this.$router
   render: h => h(App),
