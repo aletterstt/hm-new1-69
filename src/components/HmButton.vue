@@ -10,7 +10,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .hm-button {
   height: 50px;
   background-color: red;

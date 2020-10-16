@@ -30,7 +30,7 @@ Vue.component('hm-post',HmPost)
 // Vue.use(Vant)
 
 // 方式一 : 按需加载
-import { Field, Toast,Cell, CellGroup,Dialog ,Radio,RadioGroup,Uploader,List} from 'vant'
+import { Field, Toast,Cell, CellGroup,Dialog ,Radio,RadioGroup,Uploader,List,Tab,Tabs,PullRefresh} from 'vant'
 
 Vue.use(Uploader);
 
@@ -42,7 +42,9 @@ Vue.use(CellGroup);
 Vue.use(Toast)
 Vue.use(Field)
 Vue.use(List);
-
+Vue.use(Tab);
+Vue.use(Tabs);
+Vue.use(PullRefresh);
 // 注册一个全局过滤器
 import moment from 'moment'
 Vue.filter('date',function (val,format='YYYY-MM-DD') {

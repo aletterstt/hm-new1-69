@@ -8,7 +8,7 @@
 export default {};
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 .hm-logo {
   text-align: center;
   .iconnew {

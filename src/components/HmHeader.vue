@@ -12,11 +12,11 @@
   </div>
 </template>
 
-<script>
+<script >
 export default {};
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 .hm-header {
   height: 40px;
  .m{

@@ -153,7 +153,7 @@ let res= this.$axios.post('/upload',formdata)
 }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 .avatar{
   position: relative;
   text-align: center;
