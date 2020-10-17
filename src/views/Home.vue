@@ -7,10 +7,18 @@
       <div class="center">
         <i class="iconfont iconsearch"></i>搜索新闻
       </div>
-      <div class="right">
+      <div class="right" @click="$router.push('/user')">
         <i class="iconfont iconwode"></i>
       </div>
     </div>
+<!-- 小三角 -->
+
+
+<van-sticky z-index='999'>
+ <div class="container"  @click="$router.push('/tabsedit')">
+  <i class="iconfont iconjiantou1"></i>
+</div>
+</van-sticky>
 
     <!--tab栏  -->
     <van-tabs v-model="active" sticky>
@@ -21,11 +29,16 @@
  
 
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" offset="20" :immediate-check="false" @load="onLoad">
-   <hm-post v-for="(post,index) in postList" :key="index" :post="post"></hm-post>
+
+
+
+   <hm-post 
+   @click.native="$router.push(`/detail/${post.id}`)"
+   v-for="(post,index) in postList" :key="index" :post="post"></hm-post>
 </van-list>
 </van-pull-refresh>
   </van-tab>
-</van-tabs>
+    </van-tabs>
 
   </div>
 </template>
@@ -104,6 +117,20 @@ methods:{
 <style scoped lang="less">
 /deep/ .van-tabs__nav{
   background-color: #dddddd;
+  margin-right: 40px;
+
+}
+// 小三角
+.container{
+  background-color: #dddddd;
+  width: 40px;
+  height: 44px;
+  // background-color: pink;
+  text-align: center;
+  line-height: 44px;
+  position: absolute;
+  right: 0;
+  z-index: 999;
 }
 .header{
   display: flex;

@@ -103,7 +103,12 @@ export default {
               //将用户id保存到本地
               localStorage.setItem('user_id',data.user.id)
               this.$toast.success(message)
-              this.$router.push('/user')
+              if(this.$route.params.back){
+                this.$router.back()
+              }
+              else{
+                this.$router.push('/user')
+              }
             } else {
               this.$toast.success('登录失败')
             }
@@ -139,7 +144,7 @@ export default {
             }
      }) */
 
-      if (
+     /*  if (
         this.username !== '' &&
         this.password !== '' &&
         this.usernameErrMsg === '' &&
@@ -160,13 +165,20 @@ export default {
               //将用户id保存到本地
               localStorage.setItem('user_id',data.user.id)
               this.$toast.success(message)
-              this.$router.push('/user')
+              console.log('this.$route.params.back',this.$route.params.back);
+              if(this.$route.params.back){
+                this.$router.back()
+              }
+              else{
+                this.$router.push('/user')
+              }
+              
             } else {
               this.$toast.success('登录失败')
             }
       } else {
         this.$toast.fail('登录失败')
-      }
+      } */
     },
   },
 }
