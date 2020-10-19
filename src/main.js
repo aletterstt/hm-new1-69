@@ -19,10 +19,14 @@ import HmHeader from './components/HmHeader.vue'
 import HmLogo from './components/HmLogo.vue'
 import HmButton from './components/HmButton.vue'
 import HmPost from './components/HmPost.vue'
+import HmComment from './components/HmComment.vue'
+import HmFloor from './components/HmFloor.vue'
 Vue.component('hm-header', HmHeader)
 Vue.component('hm-logo', HmLogo)
 Vue.component('hm-button', HmButton)
 Vue.component('hm-post',HmPost)
+Vue.component('hm-comment',HmComment)
+Vue.component('hm-floor',HmFloor)
 
 // 方式三 : 全部 引入
 // import Vant from 'vant'
@@ -30,7 +34,7 @@ Vue.component('hm-post',HmPost)
 // Vue.use(Vant)
 
 // 方式一 : 按需加载
-import { Field, Toast,Cell, CellGroup,Dialog ,Radio,RadioGroup,Uploader,List,Tab,Tabs,PullRefresh,Sticky} from 'vant'
+import { Field, Toast,Cell, CellGroup,Dialog ,Radio,RadioGroup,Uploader,List,Tab,Tabs,PullRefresh,Sticky,Icon} from 'vant'
 
 Vue.use(Uploader);
 
@@ -46,6 +50,7 @@ Vue.use(Tab);
 Vue.use(Tabs);
 Vue.use(PullRefresh);
 Vue.use(Sticky);
+Vue.use(Icon);
 // 注册一个全局过滤器
 import moment from 'moment'
 Vue.filter('date',function (val,format='YYYY-MM-DD') {
