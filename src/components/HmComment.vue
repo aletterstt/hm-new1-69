@@ -9,7 +9,7 @@
       <div class="name">{{comment.user.nickname}}</div>
       <div class="date">{{comment.create_date | date}}</div>
     </div>
-    <div class="right">
+    <div class="right" @click="reply">
       回复
     </div>
   </div>
@@ -34,7 +34,12 @@ methods:{
     else{
       return num
     }
-  }
+  },
+  //点击评论组件的回复
+  reply(){
+    console.log('评论里面的回复');
+    this.$bus.$emit('reply',this.comment.id,this.comment.user.nickname)
+  },
 }
 }
 </script >

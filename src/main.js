@@ -77,6 +77,19 @@ axios.interceptors.request.use((config)=>{
   return config
 })
 
+//创建一个bus
+const bus=new Vue()
+//挂在到原型上
+Vue.prototype.$bus=bus
+
+
+
+
+
+
+
+
+
 
 //响应拦截器
 /* axios.interceptors.response.use((res)=>{

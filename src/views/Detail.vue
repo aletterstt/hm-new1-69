@@ -17,8 +17,8 @@
     <div class="container">
       <div class="title line2">{{detail.title}}</div>
       <div class="name">
-        <span>新华网</span>
-        <span>2020-10-10</span>
+        <span>{{detail.user.nickname}}</span>
+        <span>{{detail.create_date | date}}</span>
       </div>
       <div v-if="detail.type==1" class="content" v-html="detail.content">
 
@@ -26,12 +26,15 @@
       <video v-if="detail.type==2" :src="detail.content" controls>
       </video>
       <div class="bottom">
-        <div @click="like" class="like" :class="{active:detail.has_like}">
+        <div @click="like" class="like" :class="{active:detail.has_like}" >
           <i class="iconfont icondianzan"></i>
           <i>{{detail.like_length}}</i>
         </div>
       </div>
     </div>
+
+<div ref="box"></div>
+
     <!-- 评论 -->
     <div class="comments">
      <hm-comment v-for="comment in commentList " :key="comment.id" :comment="comment"></hm-comment>
@@ -42,13 +45,13 @@
       <!-- input  -->
       <div class="input" v-if="!isShow">
         <div class="left">
-          <input type="text" placeholder="写跟帖" ref="input" @focus="handleFocus">
+          <input type="text" placeholder="写跟帖"  @focus="handleFocus">
         </div>
         <div class="center">
-          <van-icon name="chat-o" badge="9" />
+          <van-icon name="chat-o" :badge="detail.comment_length" />
         </div>
         <div class="right">
-          <van-icon name="star-o" />
+          <van-icon name="star-o"  :class="{active:detail.has_star}"  @click="star" />
           </div>
       </div>
       <!-- textarea -->
@@ -56,18 +59,18 @@
       <div class="textarea" v-else>
          <div class="left">
           <textarea
-           ref="handleBlur"
+          v-model="content"
+           ref="textarea"
            @blur="handleBlur"
-            placeholder="请输入内容"
+            :placeholder="replyName?'回复 :'+replyName:'请输入内容'"
           ></textarea>
         </div>
         <div class="right">
-          <div class="send">发送</div>
+          <div class="send" @touchstart="send">发送</div>
         </div>
       </div>
     </div>
-    <div ref="aa">aa</div>
-    <div ref="bb">bb</div>
+    
   </div>
 </template>
 
@@ -75,16 +78,28 @@
 export default {
   data(){
     return {
-      detail:{},
+      detail:{
+        user:{}
+      },
       commentList:[],
-      isShow:false
+      isShow:false,
+      replyId:'',
+      replyName:'',
+      content:'',
     }
   },
 created(){
   // console.log('详情页',this.$route.params.id);
   this.getDetail()
   this.getComments()
-
+  this.$bus.$on('reply',async (replyId,replyName)=>{
+    // console.log('detail --走了:',replyId,replyName);
+    this.replyId=replyId
+    this.replyName=replyName
+    this.isShow=true
+    await this.$nextTick()
+   this.$refs.textarea && this.$refs.textarea.focus()
+  })
 },
 methods:{
   async getDetail(){
@@ -150,16 +165,55 @@ methods:{
 
 async getComments(){
 let res = await this.$axios.get(`/post_comment/${this.$route.params.id}`)
-console.log('评论列表',res.data);
+// console.log('评论列表',res.data);
 this.commentList=res.data.data
 },
 handleFocus(){
   this.isShow=true
+  this.$nextTick(()=>{
+    // console.log(this.$refs);
+    this.$refs.textarea.focus()
+  })
 },
 handleBlur(){
   this.isShow=false
-}
+  if(!this.content){
+  //失焦的时候，让replyId和replyName清空
+  this.replyId="",
+  this.replyName=""
+  }
  
+},
+//发送评论
+async send(){
+// console.log('点击发送123');
+let res= await this.$axios.post(`/post_comment/${this.$route.params.id}`,{
+  content:this.content,
+  parent_id:this.replyId
+})
+// console.log('评论的结果',res.data);
+const {statusCode,message} =res.data
+if(statusCode===200){
+  this.$toast.success(message)
+  this.getComments()
+  this.content=""
+  this.replyId=""
+  this.replyName=""
+  this.isShow=false
+
+  //滚动到某个位置
+  this.$refs.box.scrollIntoView()
+  
+}
+}, 
+//收藏
+async star(){
+  let res = await this.$axios.get(`/post_star/${this.$route.params.id}`)
+  if(res.data.statusCode===200){
+    this.$toast(res.data.message)
+    this.getComments()
+  }
+}
 }
 }
 </script>
@@ -270,6 +324,9 @@ video{
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+      .active{
+        color: #f00;
       }
       .van-icon-chat-o{
         font-size: 30px;
