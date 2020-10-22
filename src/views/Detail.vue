@@ -33,13 +33,22 @@
       </div>
     </div>
 
-<div ref="box"></div>
+<!-- <div ref="box"></div> -->
 
     <!-- 评论 -->
+    <van-list
+    :immediate-check="false"
+    v-model="loading"
+    :finished="finished"
+    offset="20"
+    finished-text="没有更多了"
+  
+    @load="onLoad"
+>
     <div class="comments">
-     <hm-comment v-for="comment in commentList " :key="comment.id" :comment="comment"></hm-comment>
-     
+     <hm-comment v-for="(comment,index) in commentList " :key="index" :comment="comment"></hm-comment>
     </div>
+    </van-list>
     <!-- 底部 -->
     <div class="footer">
       <!-- input  -->
@@ -86,6 +95,10 @@ export default {
       replyId:'',
       replyName:'',
       content:'',
+      loading:false,
+      finished:false,
+      pageIndex:1,
+      pageSize:10
     }
   },
 created(){
@@ -104,9 +117,10 @@ created(){
 methods:{
   async getDetail(){
     let res=await this.$axios.get(`/post/${this.$route.params.id}`)
-    console.log(res.data.data);
+    console.log('detail',res.data.data);
     this.detail=res.data.data
   },
+  
   // 取消关注
   async unfollow(){
     let token=localStorage.getItem('token')
@@ -164,16 +178,35 @@ methods:{
  },
 
 async getComments(){
-let res = await this.$axios.get(`/post_comment/${this.$route.params.id}`)
-// console.log('评论列表',res.data);
-this.commentList=res.data.data
+let res = await this.$axios.get(`/post_comment/${this.$route.params.id}`,{
+  params:{
+    pageIndex:this.pageIndex,
+    pageSize:this.pageSize
+  }
+})
+
+
+this.loading=false
+if(res.data.data.length<this.pageSize){
+  this.finished=true
+}
+this.commentList=[...this.commentList,...res.data.data]
+console.log('评论列表',this.commentList);
 },
-handleFocus(){
+
+
+//加载下一页
+  onLoad(){
+    this.pageIndex++;
+    this.getComments()
+    console.log('触底了');
+  },
+
+
+async handleFocus(){
   this.isShow=true
-  this.$nextTick(()=>{
-    // console.log(this.$refs);
-    this.$refs.textarea.focus()
-  })
+  await this.$nextTick()
+  this.$refs.textarea.focus()
 },
 handleBlur(){
   this.isShow=false
@@ -195,15 +228,23 @@ let res= await this.$axios.post(`/post_comment/${this.$route.params.id}`,{
 const {statusCode,message} =res.data
 if(statusCode===200){
   this.$toast.success(message)
+  this.pageIndex=1
   this.getComments()
+  this.loading=true
+  this.finished=false
+  this.commentList=[]
+  // this.getDetail()
   this.content=""
   this.replyId=""
   this.replyName=""
   this.isShow=false
-
-  //滚动到某个位置
-  this.$refs.box.scrollIntoView()
   
+  //滚动到某个位置
+  // this.$refs.box.scrollIntoView()
+  // this.commentList=[]
+  
+  console.log('111');
+ 
 }
 }, 
 //收藏
@@ -211,9 +252,9 @@ async star(){
   let res = await this.$axios.get(`/post_star/${this.$route.params.id}`)
   if(res.data.statusCode===200){
     this.$toast(res.data.message)
-    this.getComments()
-  }
+    this.getDetail()
 }
+},
 }
 }
 </script>
@@ -370,6 +411,7 @@ video{
         text-align: center;
       }
     }
-  }
+ }
 }
+
 </style>
